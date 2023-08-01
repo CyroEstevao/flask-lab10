@@ -5,11 +5,13 @@ import os
 app = Flask(__name__)
 app.debug = True
 
-# db_connection_url = "postgresql://cyro_render_db_user:SawRA23f0nyv6IMuJfs6PNa7zrrwRtqH@dpg-cj2t8hd9aq0e0q4tci40-a.oregon-postgres.render.com/cyro_render_db"
+# DATABASE_URL = "postgresql://cyro_render_db_user:SawRA23f0nyv6IMuJfs6PNa7zrrwRtqH@dpg-cj2t8hd9aq0e0q4tci40-a.oregon-postgres.render.com/cyro_render_db"
 
-# db_connection_url = "postgres://cyro_render_db_user:SawRA23f0nyv6IMuJfs6PNa7zrrwRtqH@dpg-cj2t8hd9aq0e0q4tci40-a/cyro_render_db"
+# DATABASE_URL = "postgresql://cyro_render_db_user:SawRA23f0nyv6IMuJfs6PNa7zrrwRtqH@dpg-cj2t8hd9aq0e0q4tci40-a/cyro_render_db"
 
-db_connection_url: "postgres://cyro_render_db_user:SawRA23f0nyv6IMuJfs6PNa7zrrwRtqH@dpg-cj2t8hd9aq0e0q4tci40-a.oregon-postgres.render.com/cyro_render_db"
+#internal connection DB with website link
+DATABASE_URL = "postgresql://cyro_render_db_user:SawRA23f0nyv6IMuJfs6PNa7zrrwRtqH@dpg-cj2t8hd9aq0e0q4tci40-a.oregon-postgres.render.com/cyro_render_db"
+
 
 @app.route('/')
 def hello_world():
@@ -18,8 +20,7 @@ def hello_world():
 #test conn
 @app.route('/db_test')
 def testing():
-    conn = psycopg2.connect(db_connection_url)
-    print("Connection URL:", db_connection_url)
+    conn = psycopg2.connect(DATABASE_URL)
 
     conn.close()
     return "Database Connection Successful"
@@ -28,7 +29,7 @@ def testing():
 #create table
 @app.route('/db_create')
 def creating():
-    conn = psycopg2.connect(db_connection_url)
+    conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
     cur.execute('''
         CREATE TABLE IF NOT EXISTS Basketball (
@@ -47,7 +48,7 @@ def creating():
 #populate table
 @app.route('/db_insert')
 def inserting():
-    conn = psycopg2.connect(db_connection_url)    
+    conn = psycopg2.connect(DATABASE_URL)    
     cur = conn.cursor()
     cur.execute('''
         INSERT INTO Basketball (First, Last, City, Name, Number)
@@ -64,7 +65,7 @@ def inserting():
 #Select items
 @app.route('/db_select')
 def selecting():
-    conn = psycopg2.connect(db_connection_url)
+    conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
     cur.execute('''
         SELECT * FROM Basketball;
@@ -87,7 +88,7 @@ def selecting():
 #drop table
 @app.route('/db_drop')
 def dropping():
-    conn = psycopg2.connect(db_connection_url)
+    conn = psycopg2.connect(DATABASE_URL)
     cur = conn.cursor()
     cur.execute('''
         DROP TABLE Basketball;
@@ -97,26 +98,25 @@ def dropping():
     return "Table Successfully dropped!"
 
 
-def create_app():
-    app_obj = Flask(__name__)
-    app_obj.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+# def create_app():
+#     app_obj = Flask(__name__)
+#     app_obj.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 
 
 
-    # Register the main blueprint
-    app_obj.register_blueprint(app.main)
+#     # Register the main blueprint
+#     app_obj.register_blueprint(app.main)
 
-    # Call the create_table() function to create the database table
-    app.creating()
+#     # Call the create_table() function to create the database table
+#     app.creating()
     
-    return app_obj
+#     return app_obj
 
 
 if __name__ == '__main__':
     # run() method of Flask class runs the application 
     # on the local development server using port 3308 instead of port 5000.
-    # app.run(host='0.0.0.0', port=3308)
-    app.run(host='0.0.0.0', port=10000)
+    app.run(host='0.0.0.0', port=3308)
 
     # app.run()
     
